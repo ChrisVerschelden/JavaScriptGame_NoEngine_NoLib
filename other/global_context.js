@@ -1,0 +1,30 @@
+const g_ctx = {
+    secondsPassed : 0,
+    oldTimeStamp : 0,
+    movingSpeed : 50,
+    fps : 0,
+    fpsIndicator : document.getElementById("fpsindicator"),
+    keys : {
+        right: false,
+        left: false,
+        up: false,
+    },
+    gravity : 0.6,
+    friction : 0.7,
+    player : null,
+    canvas_foreground : null,
+    context_foreground : null,
+    canvas_background : null,
+    context_background : null,
+    editor_screen : false,
+    editing_mode : false,
+    game_screen : false,
+    game_mode : false,
+    current_level : 0,
+    wheel_position : 0,
+    home_screen_buttons : [],
+    level_as_been_drawed : false,
+    next_sprite : true,
+}
+
+export { g_ctx }
