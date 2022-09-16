@@ -18,8 +18,8 @@ class PlatformerEditorScreen {
             tiles_grass : new Image(),
             tiles_caves : new Image(),
         }
-        this.tiles_assets.tiles_caves.src  = "assets/decor/cave_background.png"
-        this.tiles_assets.tiles_grass.src  = "assets/decor/grass_tileset.png"
+        this.tiles_assets.tiles_caves.src  = "assets/decor/cave_background_0.png"
+        this.tiles_assets.tiles_grass.src  = "assets/decor/grass_tileset_0.png"
 
         this.buttons = [
             new Button(400, 10,"").setLabel(new Label(30, 15, "back layer")).setActive(true),
@@ -46,7 +46,6 @@ class PlatformerEditorScreen {
         this.exit  = null
         this.draw_grid = false
         this.game_grid = this.create_grid_of_divided_cases(16, 16, 32, 0, 0)
-        
 
         g_ctx.canvas_foreground.addEventListener("mouseup", event => g_ctx.editing_mode === true ? this.place_tile(event) : -1);
         g_ctx.canvas_foreground.addEventListener("mouseup", event => g_ctx.editing_mode === true ? this.place_wall(event) : -1);
@@ -177,13 +176,16 @@ class PlatformerEditorScreen {
 
     draw_tile_prevue(){
         let pos = this.last_mouse_pos_game
-        let tile = new Image()
+        let src
         if (this.current_tile.asset === "grass") {
-            tile.src  = "assets/decor/grass_tileset.png"
+            src  = "assets/decor/grass_tileset_"+g_ctx.angle[g_ctx.wheel_position]+".png"
         } else {
-            tile.src  = "assets/decor/cave_background.png"
+            src  = "assets/decor/cave_background_"+g_ctx.angle[g_ctx.wheel_position]+".png"
         }
-        
+        console.log(src);
+        let tile = new Image()
+        tile.src = src
+        let angle = {0: "0",1: "90",2: "180", 3: "270"}
         for (let i = 0; i < this.game_grid.length; i++) {
             if (intersect(pos, this.game_grid[i])) {
                 g_ctx.context_foreground.drawImage(tile, this.current_tile.position.x, this.current_tile.position.y, 32, 32, this.game_grid[i].x, this.game_grid[i].y, 32, 32)
@@ -229,7 +231,7 @@ class PlatformerEditorScreen {
                     //console.log(this.game_grid[i].get_line(inside_pos));
                     temp_line = this.game_grid[i].get_line(inside_pos)
                     
-                    levels[g_ctx.current_level].plateforms.push(temp_line)
+                    levels[g_ctx.current_level].plateforms.add(temp_line)
                     
                 }
 
@@ -245,23 +247,24 @@ class PlatformerEditorScreen {
 
         let pos = this.last_mouse_pos_game
         let src
-        if (this.current_tile.asset === "grass") {src  = "grass_tileset.png"} 
-        else {src  = "cave_background.png"}
+        if (this.current_tile.asset === "grass") {src  = "grass_tileset_"+ g_ctx.angle[g_ctx.wheel_position] +".png"} 
+        else {src  = "cave_background_"+g_ctx.angle[g_ctx.wheel_position]+".png"}
         
-        let new_tile = new Tile(this.current_tile.position.x, this.current_tile.position.y, 0, 0, 32, src, 0)
+        console.log(src);
+        let new_tile = new Tile(this.current_tile.position.x, this.current_tile.position.y, 0, 0, 32, src, g_ctx.wheel_position)
         for (let i = 0; i < this.game_grid.length; i++) {
             if (intersect(pos, this.game_grid[i])) {
                 new_tile.x = this.game_grid[i].x
                 new_tile.y = this.game_grid[i].y
                 switch (this.current_layer) {
                     case "back":
-                        levels[g_ctx.current_level].back_layer.push(new_tile)
+                        levels[g_ctx.current_level].back_layer.add(new_tile)
                         break;
                     case "middle":
-                        levels[g_ctx.current_level].middle_layer.push(new_tile)
+                        levels[g_ctx.current_level].middle_layer.add(new_tile)
                         break;
                     case "front":
-                        levels[g_ctx.current_level].front_layer.push(new_tile)
+                        levels[g_ctx.current_level].front_layer.add(new_tile)
                         break;
                     default:
                         break;
@@ -328,12 +331,18 @@ class PlatformerEditorScreen {
     }
 
     draw() {
+        if ( g_ctx.to_next_lvl === true ) {
+            g_ctx.to_next_lvl = false
+            g_ctx.current_level++
+            g_ctx.level_as_been_drawed = false
+        }
+
         if( !(g_ctx.level_as_been_drawed) || this.background_update ){
             g_ctx.player.draw_hitboxes = true
             g_ctx.context_background.clearRect(0,0,512, 512)
 
             //draw back layer
-            levels[g_ctx.current_level].back_layer.forEach(el => {
+            levels[g_ctx.current_level].back_layer.objects.forEach(el => {
                 let tmp_tile = new Image()
                 tmp_tile.src = '../assets/decor/' + el.asset_path
                 tmp_tile.style.transform = el.transform
@@ -341,7 +350,7 @@ class PlatformerEditorScreen {
             });
 
             //draw middle layer
-            levels[g_ctx.current_level].middle_layer.forEach(el => {
+            levels[g_ctx.current_level].middle_layer.objects.forEach(el => {
                 let tmp_tile = new Image()
                 tmp_tile.src = '../assets/decor/' + el.asset_path
                 tmp_tile.style.transform = el.transform
@@ -349,8 +358,8 @@ class PlatformerEditorScreen {
             });
 
             //draw platforms
-            for (let index = 0; index < levels[g_ctx.current_level].plateforms.length; index++) {
-                levels[g_ctx.current_level].plateforms[index].setDrawingMode('fill').draw(g_ctx.context_background)
+            for (let index = 0; index < levels[g_ctx.current_level].plateforms.objects.length; index++) {
+                levels[g_ctx.current_level].plateforms.objects[index].setDrawingMode('fill').draw(g_ctx.context_background)
             }
 
             //draw helper grid if wanted
@@ -388,7 +397,7 @@ class PlatformerEditorScreen {
 
 
         //check for collisions
-        g_ctx.player.check_for_collisions(levels[g_ctx.current_level].plateforms)
+        g_ctx.player.check_for_collisions(levels[g_ctx.current_level].plateforms.objects)
 
 
         //clearing foreground and tools overlay each frame ( sinon c caca )
@@ -400,7 +409,7 @@ class PlatformerEditorScreen {
 
 
         //drawing foreground elements then various overlays
-        levels[g_ctx.current_level].front_layer.forEach(el => {
+        levels[g_ctx.current_level].front_layer.objects.forEach(el => {
             let tmp_tile = new Image()
             tmp_tile.src = '../assets/decor/' + el.asset_path
             tmp_tile.style.transform = el.transform

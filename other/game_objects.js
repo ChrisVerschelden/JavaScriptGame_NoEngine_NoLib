@@ -32,7 +32,7 @@ class GameObject {
 
     draw(context){this.draw_label(context)}
 
-    draw_label(context){ if (this.label !== null) this.label.setX(this.x).setY(this.y).draw(context)}
+    draw_label(context){ this.label !== null ? this.label.setX(this.x).setY(this.y).draw(context) : -1 }
 }
 
 class Label extends GameObject {
@@ -75,7 +75,7 @@ class Point extends GameObject {
 
 class Line extends GameObject {
     constructor(p1, p2, label = null, draw_mode=null){
-        super(0, 0, label, draw_mode)
+        super(p1.x, p1.y, label, draw_mode)
         this.p1 = p1
         this.p2 = p2
     }
@@ -267,10 +267,10 @@ class Player extends Moving {
             }
         }
         
-        // check if exit is touched
-        // let exit = new Circle(levels[g_ctx.current_level].exit.x, levels[g_ctx.current_level].exit.y, 10)
-        // if ( intersect( exit, player_vertical_axis) ) g_ctx.current_level++
-        // if ( intersect( exit, player_vertical_axis) ) g_ctx.current_level++
+        //check if exit is touched
+        let exit = new Circle(levels[g_ctx.current_level].exit.x, levels[g_ctx.current_level].exit.y, 10)
+        if ( intersect( exit, player_vertical_axis) ) g_ctx.to_next_lvl = true
+        if ( intersect( exit, player_vertical_axis) ) g_ctx.to_next_lvl = true
 
         this.current_collision = collision
     }
@@ -507,6 +507,41 @@ class TileWithSections extends Square{
     }
 }
 
+class GO_Set {
+    constructor(objects = null){
+        this.objects = objects === null ? [] : objects
+    }
+
+    in(obj){
+        for (let i = 0; i < this.objects.length; i++) {
+            if (this.objects[i].x === obj.x && this.objects[i].y === obj.y) return i
+        }
+        return -1
+    }
+
+    add(obj){
+        if (this.in(obj) === -1) this.objects.push(obj)
+    }
+
+    remove(obj){
+        if (this.in(obj) !== -1) this.objects.push(obj)
+    }
+
+    pop(){
+        this.objects.pop()
+    }
+
+    to_str_eval(){
+        if (this.objects.length < 1) return 'new GO_Set()'
+
+        let result = 'new GO_Set(' + this.objects[0]
+        for (let i = 1; i < this.objects.length; i++) {
+            result += ',' + this.objects[i].to_str_eval()
+        }
+        result += ')'
+    }
+}
+
 class Tile {
     constructor(clipX, clipY, x, y, size, asset_path, rotation) {
         this.clipX = clipX
@@ -515,8 +550,12 @@ class Tile {
         this.y = y
         this.size = size
         this.asset_path =  asset_path
-        this.rotation = rotation
-        this.transform = "rotate(" + this.rotation + ")"
+        let angle = {0: "0",1: "90",2: "180", 3: "270"}
+        this.rotation = angle[rotation]
+        this.transform = "rotate(" + this.rotation + "deg)"
+    }
+
+    get_img() {
     }
 
     to_str_eval() {
@@ -536,32 +575,15 @@ class Level {
     }
 
     to_str_eval() {
-        let result = 'new Level(['
-        this.plateforms.forEach(element => {
-            result += element.to_str_eval() + ','
-        });
-        result.slice(0, -1)
-        result += '],['
-        this.front_layer.forEach(element => {
-            result += element.to_str_eval() + ','
-        });
-        result.slice(0, -1)
-        result += '],['
-        this.middle_layer.forEach(element => {
-            result += element.to_str_eval() + ','
-        });
-        result.slice(0, -1)
-        result += '],['
-        this.back_layer.forEach(element => {
-            result += element.to_str_eval() + ','
-        });
-        result.slice(0, -1)
-        result += '],'
-        result += this.spawn.to_str_eval() + ',' + this.exit.to_str_eval() + "," + this.tile_size + ',' + ')'
-
+        let result = 'new Level('
+        result += this.plateforms.to_str_eval()
+        result += ',' + this.front_layer.to_str_eval()
+        result += ',' + this.middle_layer.to_str_eval()
+        result += ',' + this.back_layer.to_str_eval()
+        result += ',' + this.spawn.to_str_eval() + ',' + this.exit.to_str_eval() + "," + this.tile_size + ',' + ')'
         return result
     }
         
 }
 
-export { Point, Line, Circle, Label, Polygon, Rectangle, Button, Square, Triangle, TileWithSections, Level, Tile, Player }
+export { Point, Line, Circle, Label, Polygon, Rectangle, Button, Square, Triangle, TileWithSections, Level, Tile, GO_Set, Player }

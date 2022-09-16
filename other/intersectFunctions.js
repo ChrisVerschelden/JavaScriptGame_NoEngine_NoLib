@@ -13,6 +13,20 @@ function point_circle(obj1, obj2){
     return false;
 }
 
+function point_line(obj1, obj2){
+    let lineLen = Math.hypot(obj2.x2 - obj2.x, obj2.y2 - obj2.y)
+
+    let d1 = Math.hypot(obj1.x - obj2.x, obj1.y - obj2.y)
+    let d2 = Math.hypot(obj1.x - obj2.x2, obj1.y - obj2.y2)
+
+    let buffer = 0.1;
+
+    if (d1+d2 >= lineLen-buffer && d1+d2 <= lineLen+buffer) {
+        return true;
+    }
+    return false;
+}
+
 function line_circle(obj1, obj2){
     let inside1 = point_circle(new Point(obj1.p1.x, obj1.p1.y), obj2)
     let inside2 = point_circle(new Point(obj1.p2.x, obj1.p2.y), obj2)
