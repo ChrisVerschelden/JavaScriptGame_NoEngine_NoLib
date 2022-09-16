@@ -40,7 +40,6 @@ function wheel_pos(event) {
         if (wheel_pos >= 4) wheel_pos = 0
         if (wheel_pos <= -1) wheel_pos = 3
         g_ctx.wheel_position = wheel_pos
-        console.log(g_ctx.wheel_position);
 }
 
 export { keydown, keyup, wheel_pos }

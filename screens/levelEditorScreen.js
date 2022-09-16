@@ -226,19 +226,13 @@ class PlatformerEditorScreen {
         for (let i = 0; i < this.game_grid.length; i++) {
             if (intersect(pos, this.game_grid[i])) {
                 inside_pos = this.game_grid[i].section_collision(pos)
-
                 if (inside_pos != -1) {
-                    //console.log(this.game_grid[i].get_line(inside_pos));
-                    temp_line = this.game_grid[i].get_line(inside_pos)
-                    
+                    temp_line = this.game_grid[i].get_line(inside_pos)           
                     levels[g_ctx.current_level].plateforms.add(temp_line)
-                    
                 }
-
                 inside_pos = -1
             }
         }
-
         this.background_update = true
     }
 
@@ -393,7 +387,7 @@ class PlatformerEditorScreen {
         }
 
         //update all objects
-        g_ctx.player.update(g_ctx)
+        g_ctx.player.update()
 
 
         //check for collisions

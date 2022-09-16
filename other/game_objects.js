@@ -178,7 +178,7 @@ class Player extends Moving {
             // hit boxes
                 //feet
             context.strokeRect(this.x + 9, this.y, 28, -8);
-            //head
+                //head
             context.strokeRect(this.x + 11, this.y - 46, 22, 8);
                 //vertical axis
             new Line(new Point(this.x + 23, this.y - 46), new Point(this.x + 23,this.y)).draw(context)
@@ -508,8 +508,8 @@ class TileWithSections extends Square{
 }
 
 class GO_Set {
-    constructor(objects = null){
-        this.objects = objects === null ? [] : objects
+    constructor(objects = []){
+        this.objects = objects
     }
 
     in(obj){
@@ -534,11 +534,11 @@ class GO_Set {
     to_str_eval(){
         if (this.objects.length < 1) return 'new GO_Set()'
 
-        let result = 'new GO_Set(' + this.objects[0]
+        let result = 'new GO_Set(' + this.objects[0].to_str_eval()
         for (let i = 1; i < this.objects.length; i++) {
             result += ',' + this.objects[i].to_str_eval()
         }
-        result += ')'
+        return result += ')'
     }
 }
 

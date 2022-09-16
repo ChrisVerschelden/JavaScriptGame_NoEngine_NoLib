@@ -1,6 +1,6 @@
 import { g_ctx } from "./other/global_context.js";
 import { levels } from "./other/levels.js";
-import { Point, Circle, Label, Polygon, Rectangle, Button, Square, Triangle, TileWithSections, Player, Line } from "./other/game_objects.js";
+import { Point, GO_Set, Circle, Label, Polygon, Rectangle, Button, Square, Triangle, TileWithSections, Player, Line } from "./other/game_objects.js";
 import { keydown, keyup, wheel_pos } from "./other/keyFunctions.js";
 import { PlatformerEditorScreen } from "./screens/levelEditorScreen.js";
 import { PlatformerGameScreen } from "./screens/gameScreen.js";
