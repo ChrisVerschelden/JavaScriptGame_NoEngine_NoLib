@@ -422,7 +422,7 @@ class PlatformerEditorScreen {
         }
 
         //update all objects
-        g_ctx.player.update(g_ctx)
+        g_ctx.player.update()
 
 
         //check for collisions

@@ -178,7 +178,7 @@ class Player extends Moving {
             // hit boxes
                 //feet
             context.strokeRect(this.x + 9, this.y, 28, -8);
-            //head
+                //head
             context.strokeRect(this.x + 11, this.y - 46, 22, 8);
                 //vertical axis
             new Line(new Point(this.x + 23, this.y - 46), new Point(this.x + 23,this.y)).draw(context)
