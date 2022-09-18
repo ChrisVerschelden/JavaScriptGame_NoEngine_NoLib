@@ -177,8 +177,6 @@ function point_polygon(obj1, obj2) {
         next++
         if (next === obj2.vertices.length) next = 0
     }
-    
-    //console.log(touch_cpt);
     if (touch_cpt > 2) return true
 
     return false

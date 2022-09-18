@@ -390,7 +390,6 @@ class Rectangle extends GameObject {
         if(this.draw_mode == "stroke") {
             context.strokeRect(this.x, this.y, this.w, this.h);
         } else {
-            console.log('yo');
             context.fillRect(this.x, this.y, this.w, this.h);
         }
         
@@ -508,14 +507,13 @@ class TileWithSections extends Square{
 }
 
 class GO_Set {
-    constructor(objects = null){
-        this.objects = objects === null ? [] : objects
+    constructor(objects = new Array()){
+        this.objects = objects
     }
 
     in(obj){
-        for (let i = 0; i < this.objects.length; i++) {
-            if (this.objects[i].x === obj.x && this.objects[i].y === obj.y) return i
-        }
+        for (let i = 0; i < this.objects.length; i++) if (this.objects[i].x === obj.x && this.objects[i].y === obj.y) return i
+        
         return -1
     }
 
@@ -524,7 +522,8 @@ class GO_Set {
     }
 
     remove(obj){
-        if (this.in(obj) !== -1) this.objects.push(obj)
+        let pos = this.in(obj)
+        if (pos !== -1) this.objects.splice(pos, 1)
     }
 
     pop(){
@@ -534,11 +533,11 @@ class GO_Set {
     to_str_eval(){
         if (this.objects.length < 1) return 'new GO_Set()'
 
-        let result = 'new GO_Set(' + this.objects[0]
-        for (let i = 1; i < this.objects.length; i++) {
-            result += ',' + this.objects[i].to_str_eval()
-        }
-        result += ')'
+        let result = 'new GO_Set([' + this.objects[0].to_str_eval()
+        
+        for (let i = 1; i < this.objects.length; i++) result += ',' + this.objects[i].to_str_eval()
+
+        return result + '])'
     }
 }
 

@@ -37,6 +37,9 @@ const g_ctx = {
         cave_270: new Image(),
     },
     angle : {0: "0",1: "90",2: "180", 3: "270"},
+    return_button : null,
+    return_button_visible: false,
+    new_anim_cpt : 0
 }
 
 g_ctx.assets.grass_0.src = "../assets/decor/grass_tileset_0.png"

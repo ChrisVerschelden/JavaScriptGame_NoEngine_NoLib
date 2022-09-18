@@ -17,10 +17,10 @@ class PlatformerGameScreen {
 
         if( !(g_ctx.level_as_been_drawed) || this.back_ground_need_update){
             g_ctx.player.draw_hitboxes = false
-            g_ctx.context_background.clearRect(0,0,512, 512)
+            g_ctx.context_background.clearRect(0,0,800, 800)
             
             //draw back layer
-            levels[g_ctx.current_level].back_layer.forEach(el => {
+            levels[g_ctx.current_level].back_layer.objects.forEach(el => {
                 let tmp_tile = new Image()
                 tmp_tile.src = '../assets/decor/' + el.asset_path
                 tmp_tile.style.transform = el.transform
@@ -28,7 +28,7 @@ class PlatformerGameScreen {
             });
 
             //draw middle layer
-            levels[g_ctx.current_level].middle_layer.forEach(el => {
+            levels[g_ctx.current_level].middle_layer.objects.forEach(el => {
                 let tmp_tile = new Image()
                 tmp_tile.src = '../assets/decor/' + el.asset_path
                 tmp_tile.style.transform = el.transform
@@ -60,15 +60,13 @@ class PlatformerGameScreen {
         g_ctx.player.check_for_collisions(levels[g_ctx.current_level].plateforms.objects)
 
         //clearing foreground and background if needed
-        
-
-        g_ctx.context_foreground.clearRect(0,0,512, 512)
+        g_ctx.context_foreground.clearRect(0,0,800, 800)
 
         //drawing foreground, character and background if needed
         g_ctx.player.draw(g_ctx.context_foreground)
 
         //drawing foreground elements then various overlays
-        levels[g_ctx.current_level].objects.front_layer.forEach(el => {
+        levels[g_ctx.current_level].front_layer.objects.forEach(el => {
             let tmp_tile = new Image()
             tmp_tile.src = '../assets/decor/' + el.asset_path
             tmp_tile.style.transform = el.transform
